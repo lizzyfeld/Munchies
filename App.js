@@ -28,7 +28,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="RestaurantSearch">
+        <Stack.Screen name="Restaurants">
           {(props) => (
             <RestaurantSearch
               {...props}
