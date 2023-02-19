@@ -1,11 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import APICalls from './Components/APICalls'
+import BackgroundImage from './components/BackgroundImage';
+
 
 export default function App() {
+  //const [data, setData] = useState([]);
+  //const [loading, setLoading] = useState(true);
   return (
     <View style={styles.container}>
-      <Text>Bridgie!</Text>
-      <StatusBar style="auto" />
+      <BackgroundImage />
     </View>
   );
 }
