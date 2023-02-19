@@ -29,7 +29,7 @@ const PlaceInfo = ({ route }) => {
 
   const handleBookPress = () => {
     navigation.navigate('qrCodepage',{
-      name:place.name
+      name: place.name
     });
   };
 
