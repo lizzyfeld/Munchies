@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, TextInput, Button } from 'react-native';
 
 const API_KEY = 'AIzaSyDFyJqPeKqz2XfgFLTS4r9uoQZCSe11L0c';
 
-const RestaurantSearch = ({ onSelectPlace }) => {
+const RestaurantSearch = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = async () => {
@@ -12,7 +12,8 @@ const RestaurantSearch = ({ onSelectPlace }) => {
         `https://maps.googleapis.com/maps/api/place/textsearch/json?key=${API_KEY}&query=${searchQuery}`
       );
       const json = await response.json();
-      onSelectPlace(json.results[0].place_id);
+      const placeId = json.results[0].place_id;
+      navigation.navigate('PlaceInfo', { placeId });
     } catch (error) {
       console.error(error);
     }

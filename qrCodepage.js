@@ -3,10 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import QRCode from "react-native-qrcode-svg";
 
-export default function App() {
+export default function App({ route, navigation }) {
   const [discountCode, setDiscountCode] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
   const intervalId = useRef(null);
+  console.log(route.params);
+  const place = route.params.name;
+
 
   useEffect(() => {
     // Generate a random discount code
@@ -24,7 +27,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Zareen's 10% Discount:</Text>
+      <Text style={styles.text}>{place} 10% Discount:</Text>
       <Text style={styles.timestamp}>{currentTime}</Text>
       {discountCode && <QRCode value={discountCode} size={200} />}
       <StatusBar style="auto" />

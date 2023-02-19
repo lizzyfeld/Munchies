@@ -1,59 +1,56 @@
-import React, { useState, useCallback } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import RestaurantSearch from './RestaurantSearch';
-import PlaceInfo from './PlaceInfo';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import qrCodepage from './qrCodepage';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const API_KEY = 'AIzaSyDFyJqPeKqz2XfgFLTS4r9uoQZCSe11L0c';
 
-const Stack = createStackNavigator();
+const PlaceInfo = ({ route }) => {
+  const [place, setPlace] = useState(null);
+  const navigation = useNavigation();
 
-const App = () => {
-  const [selectedPlace, setSelectedPlace] = useState(null);
+  const placeId = route.params.placeId;
 
-  const handleSelectPlace = useCallback(async (placeId) => {
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?key=${API_KEY}&placeid=${placeId}`
-      );
-      const json = await response.json();
-      setSelectedPlace(json.result);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  // Fetch place details using the Place ID
+  useEffect(() => {
+    const fetchPlace = async () => {
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/details/json?key=${API_KEY}&placeid=${placeId}&fields=name,formatted_address,formatted_phone_number,photo`
+        );
+        const json = await response.json();
+        setPlace(json.result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchPlace();
+  }, [placeId]);
+
+  const handleBookPress = () => {
+    navigation.navigate('qrCodepage',{
+      name:place.name
+    });
+  };
+
+  if (!place) {
+    return <Text>Loading...</Text>;
+  }
+
+  const photoReference = place.photos ? place.photos[0].photo_reference : null;
+  const photoUrl = photoReference
+    ? `https://maps.googleapis.com/maps/api/place/photo?key=${API_KEY}&photoreference=${photoReference}&maxwidth=400`
+    : null;
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="RestaurantSearch">
-          {(props) => (
-            <RestaurantSearch
-              {...props}
-              onSelectPlace={handleSelectPlace}
-            />
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="PlaceInfo">
-          {(props) => (
-            <PlaceInfo {...props} place={selectedPlace} />
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="qrCodepage" component={qrCodepage} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View>
+      <Text>{place.name}</Text>
+      <Text>{place.formatted_address}</Text>
+      <Text>{place.formatted_phone_number}</Text>
+      {photoUrl && <Image source={{ uri: photoUrl }} style={{ width: 400, height: 300 }} />}
+      <Button title="Book" onPress={handleBookPress} />
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
-export default App;
+export default PlaceInfo;
