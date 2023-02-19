@@ -48,7 +48,7 @@ const PlaceInfo = ({ route }) => {
       <Text>{place.formatted_address}</Text>
       <Text>{place.formatted_phone_number}</Text>
       {photoUrl && <Image source={{ uri: photoUrl }} style={{ width: 400, height: 300 }} />}
-      <Button title="Book" onPress={handleBookPress} />
+      <Button title="Book with a 10% discount" onPress={handleBookPress} />
     </View>
   );
 };
